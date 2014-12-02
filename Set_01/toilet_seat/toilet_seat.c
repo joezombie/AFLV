@@ -3,73 +3,60 @@
 #include <unistd.h>
 #include <stdbool.h>
 
-struct queen{
-	short row;
-    short column;
-};
-
 int main(int argc, char** argv) {
+    const int inputMaxSize = 1000;
 	char buf[1];
-    const int nQueens = 8;
-    const int nRows = 8;
-    const int nColumns = 8;
-	struct queen queens[nQueens];
-    bool valid = true;
+    char input[inputMaxSize];
+    int nInput;
+    int p1Changes = 0;
+    int p2Changes = 0;
+    int p3Changes = 0;
 
-    for(int i=0, j=0, q=0; read(0, buf, sizeof(buf)) > 0;){
-    	switch(buf[0]){
-    		case '\n':
-    			i++;
-    			j = 0;
-    			break;
-    		case '*':
-                queens[q].row = i;
-                queens[q].column = j;
-                q += 1;
-			case '.':
-			default:
-				j++;
-    	}
-    }
-
-    for(int i = 0; i < nQueens; i++){
-        for(int j = i + 1; j < nQueens; j++){
-            if(queens[i].row == queens[j].row || queens[i].column == queens[j].column){
-                valid = false;
-                break;
-            }
-            for(int r = queens[i].row, c = queens[i].column; r < nRows && c < nColumns; r++, c++){
-                if(queens[j].row == r && queens[j].column == c){
-                    valid = false;
-                    break;
-                }
-            }
-            for(int r = queens[i].row, c = queens[i].column; r > 0 && c > 0; r--, c--){
-                if(queens[j].row == r && queens[j].column == c){
-                    valid = false;
-                    break;
-                }
-            }
-            for(int r = queens[i].row, c = queens[i].column; r < nRows && c > 0; r++, c--){
-                if(queens[j].row == r && queens[j].column == c){
-                    valid = false;
-                    break;
-                }
-            }
-            for(int r = queens[i].row, c = queens[i].column; r > 0 && c < nColumns; r--, c++){
-                if(queens[j].row == r && queens[j].column == c){
-                    valid = false;
-                    break;
-                }
-            }
+    for(int i = 0; read(0, buf, sizeof(buf)) > 0; i++){
+        if(buf[0] == '\n'){
+            break;
+        } else {
+            input[i] = buf[0];
+            nInput += 1;
         }
     }
 
-    if(valid){
-        printf("%s\n", "valid");
-    } else {
-        printf("%s\n", "invalid");
+    for(int i = 1; i < nInput; i++){
+        switch(input[i]){
+            case 'U':
+                p2Changes += 2;
+                break;
+            case 'D':
+                p1Changes += 2;
+                break;
+        }
+        if(input[i] != input[i-1]){
+            p3Changes += 1;
+        }
     }
+    
+    if(input[0] == input[1]){
+        switch(input[1]){
+            case 'U':
+                p2Changes -= 1;
+                break;
+            case 'D':
+                p1Changes -= 1;
+                break;
+        }
+    } else {
+        switch(input[1]){
+            case 'U':
+                p1Changes += 1;
+                break;
+            case 'D':
+                p2Changes += 1;
+                break;
+        }
+    }
+
+    printf("%d\n%d\n%d\n", p1Changes, p2Changes, p3Changes);
+
     return (EXIT_SUCCESS);
 }
 
