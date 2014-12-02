@@ -1,2 +1,2 @@
-toilet_seat: toilet_seat.c
-	gcc -std=c99 -o toilet_seat.exe toilet_seat.c -I.
+t9_spelling: t9_spelling.c
+	gcc -std=c99 -o t9_spelling.exe t9_spelling.c -I.
