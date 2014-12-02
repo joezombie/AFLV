@@ -1,2 +1,2 @@
 eight_queens.exe: eight_queens.c
-	gcc -o eight_queens.exe eight_queens.c -I.
+	gcc -std=c99 -o eight_queens.exe eight_queens.c -I.
