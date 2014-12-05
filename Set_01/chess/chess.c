@@ -30,6 +30,10 @@ int main(int argc, char** argv) {
     int nCases = 0;
     scanf("%d\n", &nCases);
 
+    int lines[8][8] = {
+        {0,},
+    };
+
     for(int i = 0; i < nCases; i++){
         bool possible = true;
         char x1 = '\0';
