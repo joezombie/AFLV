@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdbool.h>
-#include <map>
+#include <set>
 
 
 int main(int argc, char** argv) {
@@ -12,7 +12,7 @@ int main(int argc, char** argv) {
         int both = 0;
         scanf("%d %d\n", &nJack, &nJill);
 
-        std::map<int, bool> cds;
+        std::set<int> cds;
 
         if(nJack == 0 && nJill == 0){
             break;
@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
         for(int i = 0; i < nJack; i++){
             int cd = 0;
             scanf("%d\n", &cd);
-            cds[cd] = true;
+            cds.insert(cd);
         }
         for(int i = 0; i < nJill; i++){
             int cd = 0;
