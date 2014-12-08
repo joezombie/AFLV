@@ -1,2 +1,2 @@
-compile: cd.cpp
-	g++ -o cd cd.cpp -I.
+compile: cd.cs
+	mcs -optimize+ -r:System.Numerics cd.cs Kattio.cs

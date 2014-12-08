@@ -1,2 +1,2 @@
-compile: rock_paper_scissors.c
-	gcc -std=c99 -o rock_paper_scissors rock_paper_scissors.c -I.
+compile: rock_paper_scissors.cpp
+	g++ -g -O2 -static -std=gnu++0x -o rock_paper_scissors rock_paper_scissors.cpp -I.
