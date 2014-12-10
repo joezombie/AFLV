@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using Kattis.IO;
 
 public class Orders
@@ -10,11 +11,11 @@ public class Orders
 	static Dictionary<int, order> orders = new Dictionary<int, order>();
 
 	public struct order{
-		public List<int> items;
+		public string items;
 		public bool ambigous;
 		public bool complete;
 
-		public order(List<int> items){
+		public order(string items){
 			this.items = items;
 			ambigous = false;
 			complete = false;
@@ -25,12 +26,7 @@ public class Orders
 				if(ambigous){
 					return "Ambiguous";
 				} else {
-					StringBuilder sb = new StringBuilder();
-					foreach(int i in items){
-						sb.Append(i.ToString());
-						sb.Append(" ");
-					}
-					return sb.ToString();
+					return items;
 				}
 			} else {
 				return "Impossible";
@@ -43,53 +39,11 @@ public class Orders
 			return orders[cost];
 		}
 
-		return findOrder(new List<int>(), 0, cost);
+		return findOrder(0, 0, cost);
 	}
 
-	static public order findOrder(List<int> items, int sum, int cost){
-		order result = new order(items);
-
-		// -- Remove
-		Console.WriteLine("-- " + cost.ToString() + " " + sum.ToString() + " --");
-		foreach(int i in items){
-			Console.Write(i.ToString() + " ");
-		}
-		Console.WriteLine("\n---");
-		// --
-
-		for(int i = 0; i < nItems; i++){
-			int newSum = sum + menuItems[i];
-			
-			if(newSum == cost){
-				items.Add(menuItems[i]);
-				result = order(items);
-				result.complete = true;
-				if(orders.ContainsKey(cost)){
-					// Does not work
-					/*
-					if(orders[cost].items.Equals(newOrder.items)){
-						Console.WriteLine("equals");
-					} else {
-						Console.WriteLine("does not equal");
-						result.ambigous = true;
-					}*/
-				} else {
-					
-				}
-			}
-			if(newSum < cost){
-				items.Add(menuItems[i]);
-				order newOrder = findOrder(new List<int>(items), newSum, cost);
-				if(newOrder.complete){
-					result = newOrder;
-					if(orders.ContainsKey(cost)){
-						result.ambigous = true;	
-					}else {
-						orders.Add(cost, newOrder);
-					}
-				}
-			}
-		}
+	static public order findOrder(int i, int sum, int cost){
+		order result = new order(null);
 
 		return result;
 	}
@@ -106,12 +60,21 @@ public class Orders
 			menuItems[i] = scanner.NextInt();
 		}
 
+		Array.Sort(menuItems, new Comparison<int>(
+				(i1, i2) => i2.CompareTo(i1)
+			));
+
+		foreach (int i in menuItems) {
+			Console.WriteLine(i);
+		}
+
+
 		int nOrders = scanner.NextInt();
 
 		for(int i = 0; i < nOrders; i++){
-			order iOrder = findOrder(scanner.NextInt());
-			string s = iOrder.ToString() + "\n";
-			writer.Write(s, 0, s.Length);
+			//order iOrder = findOrder(scanner.NextInt());
+			//string s = iOrder.ToString() + "\n";
+			//writer.Write(s, 0, s.Length);
 		}
         
         writer.Flush();
