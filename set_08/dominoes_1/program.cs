@@ -4,61 +4,78 @@ using Kattis.IO;
 
 public class Program
 {
-	static public bool[] fallen;
-	static public Dictionary<int, List<int>> adj;
+    const int MAX_TILES = 100000;
+    static public List<int>[] adj;
 
-	static public void countFallen(int next, bool node){
-		if(!fallen[next]){
-			fallen[next] = node;
-			foreach(int i in adj[next]){
-				countFallen(i, true);
-			}
-		}
-	}
+    static int[] low;
+    static int[] num;
+    static bool[] incomp;
+    static int curnum = 0;
+    static Stack<int> comp;
+    static void scc(int u) {
+        comp.Push(u);
+        incomp[u] = true;
+        low[u] = num[u] = curnum++;
 
+        for (int i = 0; i < adj[u].Count; i++) {
+            int v = adj[u][i];
+            if (num[v] == -1) {
+                scc(v);
+                low[u] = Math.Min(low[u], low[v]);
+            } else if (incomp[v]) {
+                low[u] = Math.Min(low[u], num[v]);
+            }
+        }
+        if (num[u] == low[u]) {
+            Console.Write("comp: ");
+            while (true) {
+                int cur = comp.Pop();
+                incomp[cur] = false;
+                Console.Write(cur.ToString() + ", ");
+                if (cur == u) {
+                    break;
+                }
+            }
+            Console.WriteLine();
+        }
+    }
+    
     static public void Main ()
     {
         Scanner scanner = new Scanner();
         BufferedStdoutWriter writer = new BufferedStdoutWriter();
         
+        adj = new List<int>[MAX_TILES];
+        low = new int[MAX_TILES];
+        num = new int[MAX_TILES];
+        incomp = new bool[MAX_TILES];
+        comp = new Stack<int>();
+
         int nCases = scanner.NextInt();
 
         while(nCases-- > 0){
-        	int nTiles = scanner.NextInt();
-        	int nLines = scanner.NextInt();
+            int nTiles = scanner.NextInt();
+            int nLines = scanner.NextInt();
 
-        	adj = new Dictionary<int, List<int>>();
-        	fallen = new bool[nTiles + 1];
+            for(int i = 0; i < nTiles; i++){
+                adj[i] = new List<int>();
+                num[i] = -1;
+                incomp[i] = false;
+            }
 
-	        for(int i = 0; i <= nTiles; i++){
-	    		adj.Add(i, new List<int>());
-	    	}
+            while(nLines-- > 0){
+                int x = scanner.NextInt() - 1;
+                int y = scanner.NextInt() - 1;
+                adj[x].Add(y);
+            }
 
-        	while(nLines-- > 0){
-        		int x = scanner.NextInt();
-        		int y = scanner.NextInt();
-        		adj[x].Add(y);
-        	}
+            for (int i = 0; i < nTiles; i++) {
+                if (num[i] == -1) {
+                    scc(i);
+                }
+            }
 
-        	for(int i = 1; i <= nTiles; i++){
-        		countFallen(i, false);
-        	}
-
-        	/*
-        	for(int i = 1; i <= nTiles; i++){
-        		writer.Write(fallen[i]);
-        		writer.Write(" ");
-        	}
-        	writer.Write("\n");
-        	*/
-
-        	int count = 0;
-	        for(int i = 1; i <= nTiles; i++){
-	        	if(!fallen[i]){
-	        		count += 1;
-	        	}
-	        }
-	        writer.WriteLine(count);
+            writer.WriteLine(curnum);
         }
         
         writer.Flush();
