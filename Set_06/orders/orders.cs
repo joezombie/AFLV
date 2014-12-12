@@ -34,6 +34,8 @@ public class Orders
 		}
 	}
 
+	int[][] mem;
+
 	static public order findOrder(int cost){
 		if(orders.ContainsKey(cost)){
 			return orders[cost];
@@ -42,7 +44,7 @@ public class Orders
 		return findOrder(0, 0, cost);
 	}
 
-	static public order findOrder(int i, int sum, int cost){
+	static public order findOrder(int i, int cost){
 		order result = new order(null);
 
 		return result;
@@ -55,14 +57,13 @@ public class Orders
         
 		nItems = scanner.NextInt();
 		menuItems = new int[nItems];
+		mem = new int[n]
 
 		for(int i = 0; i < nItems; i++){
 			menuItems[i] = scanner.NextInt();
 		}
 
-		Array.Sort(menuItems, new Comparison<int>(
-				(i1, i2) => i2.CompareTo(i1)
-			));
+		Array.Sort(menuItems);
 
 		foreach (int i in menuItems) {
 			Console.WriteLine(i);
