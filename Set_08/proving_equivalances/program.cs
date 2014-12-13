@@ -4,59 +4,68 @@ using Kattis.IO;
 
 public class Program
 {
-	static public bool[] fallen;
-	static public Dictionary<int, List<int>> adj;
+    const int MAX_STATEMENTS = 100000;
+    static List<int>[] adj;
+    static bool[] visited;
 
-	static public void countFallen(int next, bool node){
-		if(!fallen[next]){
-			fallen[next] = node;
-			foreach(int i in adj[next]){
-				countFallen(i, true);
-			}
-		}
-	}
+    static void dfs(int u) {
+        if (visited[u]) {
+            return;
+        }
+        visited[u] = true;
+        for (int i = 0; i < adj[u].Count; i++) {
+            int v = adj[u][i];
+            dfs(v);
+        }
+    }
 
+    static void rdfs(int u) {
+        if (visited[u]) {
+            return;
+        }
+        visited[u] = true;
+        for (int i = 0; i < adjb[u].Count; i++) {
+            int v = adjb[u][i];
+            rdfs(v);
+        }
+    }
+    
     static public void Main ()
     {
         Scanner scanner = new Scanner();
         BufferedStdoutWriter writer = new BufferedStdoutWriter();
         
+        adj = new List<int>[MAX_TILES];
+        adjb = new List<int>[MAX_TILES];
+        visited = new bool[MAX_TILES];
+
         int nCases = scanner.NextInt();
 
         while(nCases-- > 0){
-        	int nTiles = scanner.NextInt();
-        	int nLines = scanner.NextInt();
+            int nTiles = scanner.NextInt();
+            int nLines = scanner.NextInt();
 
-        	adj = new Dictionary<int, List<int>>();
-        	fallen = new bool[nTiles + 1];
+            for(int i = 0; i < nTiles; i++){
+                adj[i] = new List<int>();
+                adjb[i] = new List<int>();
+                visited[i] = false;
+            }
 
-	        for(int i = 0; i <= nTiles; i++){
-	    		adj.Add(i, new List<int>());
-	    	}
+            while(nLines-- > 0){
+                int x = scanner.NextInt() - 1;
+                int y = scanner.NextInt() - 1;
+                adj[x].Add(y);
+                adjb[y].Add(x);
+            }
 
-        	while(nLines-- > 0){
-        		adj[scanner.NextInt()].Add(scanner.NextInt());
-        	}
+            for (int u = 0; u < nTiles; u++) {
+                dfs(u);
+            }
 
-        	for(int i = 1; i <= nTiles; i++){
-        		countFallen(i, false);
-        	}
+            writer.WriteLine("END");    
 
-        	/*
-        	for(int i = 1; i <= nTiles; i++){
-        		writer.Write(fallen[i]);
-        		writer.Write(" ");
-        	}
-        	writer.Write("\n");
-        	*/
 
-        	int count = 0;
-	        for(int i = 1; i <= nTiles; i++){
-	        	if(!fallen[i]){
-	        		count += 1;
-	        	}
-	        }
-	        writer.WriteLine(count);
+            
         }
         
         writer.Flush();

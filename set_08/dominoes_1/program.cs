@@ -12,6 +12,8 @@ public class Program
     static bool[] incomp;
     static int curnum = 0;
     static Stack<int> comp;
+    static int[] sccCount;
+
     static void scc(int u) {
         comp.Push(u);
         incomp[u] = true;
@@ -31,12 +33,12 @@ public class Program
             while (true) {
                 int cur = comp.Pop();
                 incomp[cur] = false;
-                Console.Write(cur.ToString() + ", ");
+                //Console.Write(cur.ToString() + ", ");
                 if (cur == u) {
                     break;
                 }
             }
-            Console.WriteLine();
+            //Console.WriteLine();
         }
     }
     
@@ -56,6 +58,8 @@ public class Program
         while(nCases-- > 0){
             int nTiles = scanner.NextInt();
             int nLines = scanner.NextInt();
+
+            sccCount = 0;
 
             for(int i = 0; i < nTiles; i++){
                 adj[i] = new List<int>();
