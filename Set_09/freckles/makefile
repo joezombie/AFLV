@@ -1,2 +1,2 @@
-compile: program.cc
-	g++ -g -O2 -static -std=gnu++0x -o program program.cc -I.
+compile: program.cs
+	mcs -optimize+ -r:System.Numerics program.cs Kattio.cs
