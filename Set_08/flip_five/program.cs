@@ -14,6 +14,12 @@ public class Program
         	board[i] = new bool[10];
         }
 
+        for(int i = 1; i < 11; i++){
+        	for(int j = 1; j < 11; j++){
+				        		
+        	}
+        }
+
         writer.WriteLine("Program");
         
         writer.Flush();

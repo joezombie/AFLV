@@ -52,6 +52,7 @@ public class Program
         for (int i = 1; i < order.Count; i++){
             if(!adj[order[i]].Contains(order[i-1])){
                 complete = false;
+                break;
             }
         }
 
