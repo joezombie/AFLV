@@ -5,28 +5,7 @@ using Kattis.IO;
 
 public class Program {
     public static List<edge>[] adj;
-    public static EdgeComparer edgeComparer;
-
-    public struct union_find {
-        public int[] parent;
-        public union_find(int n) {
-            parent = new int[n];
-            for (int i = 0; i < n; i++) {
-                parent[i] = i;
-            }
-        }
-        public int find(int x) {
-            if (parent[x] == x) {
-                return x;
-            } else {
-                parent[x] = find(parent[x]);
-                return parent[x];
-            }
-        }
-        public void unite(int x, int y) {
-            parent[find(x)] = find(y);
-        }
-    }
+    public static float[] dist;
 
     public struct edge {
         public int u, v;
@@ -38,49 +17,55 @@ public class Program {
         }
     }
 
-    public class EdgeComparer: IComparer<edge>{
-        public int Compare(edge a, edge b){
-            if(a.weight < b.weight){
-                return 1;
-            } else {
-                return -1;
+    static public void bellman_ford(int n, int start) {
+        dist[start] = 1.0f;
+        for (int i = 0; i < n - 1; i++) {
+            for (int u = 0; u < n; u++) {
+                for (int j = 0; j < adj[u].Count; j++) {
+                    int v = adj[u][j].v;
+                    float w = adj[u][j].weight;
+                    dist[v] = Math.Max(dist[v], w * dist[u]);
+                }
             }
         }
     }
 
-    public bool edge_cmp(edge a, edge b) {
-        return a.weight < b.weight;
-    }
-
-    public List<edge> mst(int n, List<edge> edges) {
-        union_find uf = new union_find(n);
-        //sort(edges.begin(), edges.end(), edge_cmp);
-        edges.Sort(edgeComparer);
-        List<edge> res = new List<edge>();
-        for (int i = 0; i < edges.Count; i++) {
-            int u = edges[i].u,
-            v = edges[i].v;
-            if (uf.find(u) != uf.find(v)) {
-                uf.unite(u, v);
-                res.Add(edges[i]);
+    static void dijkstra(int start) {
+        dist[start] = 1.0f;
+        priority_queue<pair<int, int>, vector<pair<int, int> >, greater<pair<int, int> > > pq;
+        pq.push(make_pair(dist[start], start));
+        while (!pq.empty()) {
+            int u = pq.top().second;
+            pq.pop();
+            for (int i = 0; i < adj[u].size(); i++) {
+                int v = adj[u][i].v;
+                int w = adj[u][i].weight;
+                if (w + dist[u] < dist[v]) {
+                    dist[v] = w + dist[u];
+                    pq.push(make_pair(dist[v], v));
+                }
             }
         }
-        return res;
     }
 
     static public void Main ()
     {
         Scanner scanner = new Scanner();
         BufferedStdoutWriter writer = new BufferedStdoutWriter();
-         edgeComparer = new EdgeComparer();
-        
+
         while(scanner.HasNext()){
         	int nIntersections = scanner.NextInt();
         	int nCorridors = scanner.NextInt();
+            if(nIntersections == 0 && nCorridors == 0){
+                break;
+            }
 
             adj = new List<edge>[nIntersections];
+            dist = new float[nIntersections];
+            
             for(int i = 0; i < nIntersections; i++){
                 adj[i] = new List<edge>();
+                dist[i] = 0;
             }
 
         	for(int i = 0; i < nCorridors; i++){
@@ -88,7 +73,12 @@ public class Program {
                 int y = scanner.NextInt();
                 float f = float.Parse(scanner.Next(), CultureInfo.InvariantCulture);
                 adj[x].Add(new edge(x, y, f));
+                adj[y].Add(new edge(y, x, f));
         	}
+
+            bellman_ford(nIntersections, 0);
+
+            writer.WriteLine(String.Format(CultureInfo.InvariantCulture, "{0:0.0000}", dist[nIntersections - 1]));
         }
         
         writer.Flush();
