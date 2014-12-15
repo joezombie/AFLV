@@ -12,6 +12,9 @@
 #include <functional>     // std::greater
 #include <algorithm>    // std::sort
 #include <iomanip>      // std::setprecision
+#include <cstdlib>
+#include <stack>
+#include <queue>
 
 using namespace std; 
 
